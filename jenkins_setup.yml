@@ -1,0 +1,27 @@
+---
+- name: Install Jenkins on Amazon Linux
+  hosts: jenkins
+  become: yes
+  tasks:
+    - name: Install Amazon Corretto 17
+      dnf:
+        name: java-17-amazon-corretto
+        state: present
+
+    - name: Add Jenkins repo
+      get_url:
+        url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+        mode: '0644'
+
+    - name: Import Jenkins repo GPG key
+      rpm_key:
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+        state: present
+
+    - name: Install Jenkins
+      dnf:
+        name: jenkins
+        state: present
+        update_cache: yes
+
